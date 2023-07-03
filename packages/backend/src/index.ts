@@ -7,6 +7,7 @@
  */
 
 import Router from 'express-promise-router';
+import kubernetes from './plugins/kubernetes';
 import {
   createServiceBuilder,
   loadBackendConfig,
@@ -72,12 +73,14 @@ function makeCreateEnv(config: Config) {
 }
 
 async function main() {
+
   const config = await loadBackendConfig({
     argv: process.argv,
     logger: getRootLogger(),
   });
   const createEnv = makeCreateEnv(config);
 
+  const kubernetesEnv = useHotMemoize(module, () => createEnv('kubernetes'));
   const catalogEnv = useHotMemoize(module, () => createEnv('catalog'));
   const scaffolderEnv = useHotMemoize(module, () => createEnv('scaffolder'));
   const authEnv = useHotMemoize(module, () => createEnv('auth'));
@@ -93,6 +96,7 @@ async function main() {
   apiRouter.use('/techdocs', await techdocs(techdocsEnv));
   apiRouter.use('/proxy', await proxy(proxyEnv));
   apiRouter.use('/search', await search(searchEnv));
+  apiRouter.use('/kubernetes', await kubernetes(kubernetesEnv));
 
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback
   apiRouter.use(notFoundHandler());

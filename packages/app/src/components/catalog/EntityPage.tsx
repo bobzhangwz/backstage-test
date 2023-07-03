@@ -8,6 +8,7 @@ import {
   EntityProvidedApisCard,
   EntityProvidingComponentsCard,
 } from '@backstage/plugin-api-docs';
+import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
 import {
   EntityAboutCard,
   EntityDependsOnComponentsCard,
@@ -132,6 +133,9 @@ const overviewContent = (
 
 const serviceEntityPage = (
   <EntityLayout>
+    <EntityLayout.Route path="/kubernetes" title="Kubernetes">
+      <EntityKubernetesContent refreshIntervalMs={30000} />
+    </EntityLayout.Route>
     <EntityLayout.Route path="/" title="Overview">
       {overviewContent}
     </EntityLayout.Route>
