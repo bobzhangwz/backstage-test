@@ -9,5 +9,5 @@ cd $(dirname ${BASH_SOURCE[0]})/..
 
 yarn --frozen-lockfile
 yarn build:all
-yarn build-image --tag ${REGISTRY}/${IMAGE}:${BUILD_NUMBER}
+DOCKER_BUILDKIT=1 yarn build-image --tag ${REGISTRY}/${IMAGE}:${BUILD_NUMBER}
 docker push ${REGISTRY}/${IMAGE}:${BUILD_NUMBER}
