@@ -1,0 +1,75 @@
+---
+# https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services:
+name: build
+on:
+  push:
+    branches: [master]
+jobs:
+  test:
+    name: run test
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+    env:
+      BUILD_NO: ${{github.run_number}}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            src:
+             - '**'
+
+      - name: Prepare
+        if: steps.changes.outputs.src == 'true'
+        id: prep
+        run: |
+          BRANCH=${GITHUB_REF##*/}
+          TS=$(date +%s)
+          REVISION=${GITHUB_SHA::5}
+          BUILD_ID="${BRANCH}-${REVISION}-${TS}-${BUILD_NO}"
+          LATEST_ID=canary
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            BUILD_ID=${GITHUB_REF/refs\/tags\//}
+            LATEST_ID=latest
+          fi
+          echo BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') >> $GITHUB_OUTPUT
+          echo BUILD_ID=${BUILD_ID} >> $GITHUB_OUTPUT
+          echo LATEST_ID=${LATEST_ID} >> $GITHUB_OUTPUT
+
+      - name: Use Node.js
+        if: steps.changes.outputs.src == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.13.0'
+
+      - name: Configure AWS credentials
+        if: steps.changes.outputs.src == 'true'
+        uses: aws-actions/configure-aws-credentials@v2 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          role-to-assume: arn:aws:iam::160071257600:role/github-action-role
+          aws-region: ap-northeast-1
+          role-session-name: githubAction
+
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        if: steps.changes.outputs.src == 'true'
+        with:
+          packages: moby-engine moby-cli docker-compose awscli
+          version: 1.0
+
+      - name: Login to Amazon ECR
+        if: steps.changes.outputs.src == 'true'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: 'publish'
+        if: steps.changes.outputs.src == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          BUILD_ID: ${{ steps.prep.outputs.BUILD_ID }}
+        run: ./auto/publish
+

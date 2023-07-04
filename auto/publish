@@ -1,0 +1,13 @@
+#!/bin/bash -eux
+
+IMAGE=${IMAGE-backstage}
+REGISTRY=${REGISTRY-'160071257600.dkr.ecr.ap-northeast-1.amazonaws.com'}
+
+BUILD_NUMBER=${BUILD_ID-DEV}
+
+cd $(dirname ${BASH_SOURCE[0]})/..
+
+yarn --frozen-lockfile
+yarn build:all
+yarn build-image --tag ${REGISTRY}/${IMAGE}:${BUILD_NUMBER}
+docker push ${REGISTRY}/${IMAGE}:${BUILD_NUMBER}
