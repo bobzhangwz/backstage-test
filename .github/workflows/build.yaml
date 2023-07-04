@@ -55,15 +55,17 @@ jobs:
           aws-region: ap-northeast-1
           role-session-name: githubAction
 
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        if: steps.changes.outputs.src == 'true'
-        with:
-          packages: moby-engine moby-cli docker-compose awscli
-          version: 1.0
-
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        if: steps.changes.outputs.src == 'true'
+        with:
+          packages: moby-cli docker-compose awscli
+          version: 1.0
+
+
 
       - name: Login to Amazon ECR
         if: steps.changes.outputs.src == 'true'
