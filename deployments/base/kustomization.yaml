@@ -5,7 +5,11 @@ metadata:
 commonLabels:
   type: app
 resources:
-  - ./postgres
-  - ./backstage.yaml
+- ./postgres
+- ./backstage.yaml
 generators:
-  - ./secret-generator.yaml
+- ./secret-generator.yaml
+images:
+- name: 160071257600.dkr.ecr.ap-northeast-1.amazonaws.com/backstage
+  newName: 160071257600.dkr.ecr.ap-northeast-1.amazonaws.com/backstage
+  newTag: master-69051-1688522042-6
