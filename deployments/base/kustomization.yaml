@@ -13,4 +13,4 @@ generators:
 images:
 - name: 160071257600.dkr.ecr.ap-northeast-1.amazonaws.com/backstage
   newName: 160071257600.dkr.ecr.ap-northeast-1.amazonaws.com/backstage
-  newTag: master-edfa8-1688545206-17
+  newTag: master-164d8-1688549585-19
