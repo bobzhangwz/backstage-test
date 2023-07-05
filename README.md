@@ -14,7 +14,8 @@ yarn dev
 * `postgres secret`
 
 ```sh
-cat <<EOF | sops --encrypt --output-type yaml  --age age13eykxagm0xnxrx6nwlrvle64nvsudeqwhyjdsrnvzlx9f9xxp57qcv56vy /dev/stdin > ./deployments/base/postgres/postgres-secrets.enc.yaml
+cat <<EOF | sops --encrypt --output-type yaml  --input-type yaml --age age13eykxagm0xnxrx6nwlrvle64nvsudeqwhyjdsrnvzlx9f9xxp57qcv56vy /dev/stdin > ./deployments/base/postgres/postgres-secrets.enc.yaml
+---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -30,7 +31,7 @@ EOF
 * `github`
 
 ```sh
-cat <<EOF | sops --encrypt --output-type yaml  --age age13eykxagm0xnxrx6nwlrvle64nvsudeqwhyjdsrnvzlx9f9xxp57qcv56vy /dev/stdin > ./deployments/base/backstage-secret.enc.yaml
+cat <<EOF | sops --encrypt --output-type yaml --input-type yaml --age age13eykxagm0xnxrx6nwlrvle64nvsudeqwhyjdsrnvzlx9f9xxp57qcv56vy /dev/stdin > ./deployments/base/backstage-secret.enc.yaml
 apiVersion: v1
 kind: Secret
 metadata:
