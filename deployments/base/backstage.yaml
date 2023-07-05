@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: backstage:1.0.0
+          image: 160071257600.dkr.ecr.ap-northeast-1.amazonaws.com/backstage:DEV
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

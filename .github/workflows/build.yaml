@@ -22,7 +22,7 @@ jobs:
         with:
           filters: |
             src:
-             - '**'
+             - '!deployments/base/**'
 
       - name: Prepare
         if: steps.changes.outputs.src == 'true'
