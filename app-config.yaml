@@ -63,7 +63,7 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
     local:
       # (Optional). Set this to specify where the generated documentation is stored.
-      publishDirectory: '/app/docs'
+      publishDirectory: '/tmp/backstage-docs'
 
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
